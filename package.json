@@ -1,0 +1,22 @@
+{
+  "name": "__REMOTE_NAME__",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite --port 8701 --host 0.0.0.0",
+    "build": "vite build",
+    "build:prod": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.4.0",
+    "@bimo-dk/nexus-build": "^0.2.0",
+    "@bimo-dk/nexus-runtime-vue": "^0.1.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.0",
+    "typescript": "^5.6.3",
+    "vite": "^5.0.0",
+    "vue-tsc": "^2.0.0"
+  }
+}
