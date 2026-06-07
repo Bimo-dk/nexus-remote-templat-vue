@@ -1,21 +1,28 @@
-// Federation entry. Built as a plain Vue component (not an SFC) so it
-// compiles into a single chunk with a usable default export. SFCs with
-// `<script setup>` get split by Vite into a side-effect-only facade
-// chunk plus a separate <script> chunk, which leaves the federated
-// entry chunk effectively empty. See B-26.
+// Federation entry — "Bring Your Own Framework" pattern.
 //
-// Customise the template here; you can also `import OtherSFC from
-// './other.vue'` and embed it via `h(OtherSFC)` — that flows through
-// the same chunk and renders normally.
+// Instead of exposing a Vue component (which makes the host responsible
+// for picking the right framework runtime), we expose a plain
+//   mount(el: HTMLElement): () => void
+// function. The remote owns its full lifecycle: it brings its own Vue
+// runtime, creates its own app instance, mounts onto the element the
+// host hands it, and returns a teardown function the host calls when
+// the user navigates away.
+//
+// This sidesteps every cross-framework runtime mismatch (B-27): the
+// host can be Angular, React or vanilla and never has to know what
+// framework the remote uses.
+//
+// To customise: edit the EntryComponent below or import your own SFC
+// and pass it to createApp().
 
-import { defineComponent, h, ref } from 'vue';
+import { createApp, defineComponent, h, ref, type App } from 'vue';
 
 declare const __NEXUS_REMOTE_NAME__: string;
 
 const remoteName =
   typeof __NEXUS_REMOTE_NAME__ !== 'undefined' ? __NEXUS_REMOTE_NAME__ : 'remote';
 
-export default defineComponent({
+const EntryComponent = defineComponent({
   name: 'NexusRemoteEntry',
   setup() {
     const count = ref(0);
@@ -51,3 +58,15 @@ export default defineComponent({
       );
   },
 });
+
+export function mount(el: HTMLElement): () => void {
+  const app: App = createApp(EntryComponent);
+  app.mount(el);
+  return () => app.unmount();
+}
+
+// Keep a default export so older host runtimes that still call
+// `module.default()` get a usable component definition instead of
+// nothing. New host runtimes should prefer `mount()` for cross-
+// framework safety.
+export default EntryComponent;
