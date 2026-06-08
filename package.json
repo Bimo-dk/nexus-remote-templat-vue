@@ -10,8 +10,8 @@
   },
   "dependencies": {
     "vue": "^3.4.0",
-    "@bimo-dk/nexus-build": "^0.2.0",
-    "@bimo-dk/nexus-runtime-vue": "^0.1.0"
+    "@bimo-dk/nexus-build": "^1.0.0",
+    "@bimo-dk/nexus-runtime-vue": "^1.0.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.0",
